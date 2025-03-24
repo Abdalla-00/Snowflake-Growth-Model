@@ -2,7 +2,7 @@
 #define SNOWFLAKE_CELL_HPP
 
 #include <cadmium/modeling/celldevs/grid/cell.hpp>
-#include "snowflakeState.hpp"
+#include "include/snowflakeState.hpp"
 #include <cmath>
 
 using namespace cadmium::celldevs;
@@ -14,31 +14,39 @@ public:
               const std::shared_ptr<const GridCellConfig<snowflakeState, double>>& config)
       : GridCell<snowflakeState, double>(id, config) { }
 
-    [[nodiscard]] snowflakeState localComputation(
+      [[nodiscard]] snowflakeState localComputation(
         snowflakeState state,
         const std::unordered_map<std::vector<int>, NeighborData<snowflakeState, double>>& neighborhood
     ) const override {
-        // If already frozen, remain frozen.
-        if(state.frozen) {
+        // If already frozen, no further computation is needed.
+        if (state.frozen) {
             return state;
         }
-        // Accumulate deposition from neighbors.
+        
+        // Lower background water increment
+        double background = 0.05;
+        
+        // Lower deposition rate per frozen neighbor
+        double depositionPerNeighbor = 0.2;
         double deposition = 0.0;
+        
+        // Accumulate deposition from frozen neighbors.
         for (const auto& [neighborId, neighborData] : neighborhood) {
-            const snowflakeState* nState = neighborData.state;
-            if(nState->frozen) {
-                deposition += 0.15;  // Each frozen neighbor contributes 0.15
+            if (neighborData.state->frozen) {
+                deposition += depositionPerNeighbor;
             }
         }
-        // Add a constant background vapor supply.
-        double background = 0.05;
-        state.water += deposition + background;
         
-        // If water accumulation reaches threshold, freeze the cell.
-        if(state.water >= 1.0) {
+        // Update water accumulation
+        state.water += background + deposition;
+        
+        // Freeze the cell if the water threshold is reached.
+        // You can keep the threshold at 1.0 or adjust it if needed.
+        if (state.water >= 1.0) {
             state.frozen = true;
-            state.water = 1.0; // Cap water level to threshold.
+            state.water = 1.0;  // Cap the water value.
         }
+        
         return state;
     }
 
