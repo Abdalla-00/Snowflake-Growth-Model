@@ -58,7 +58,7 @@ The simulation is run over an extended period (e.g., 1000 time units) to capture
 ### Steps to Run the Simulation
 Run the simulation using the configuration file:
 ```bash
-./bin/Snowflake_Growth_Model config/snowflake_config.json
+./bin/Snowflake_Growth_Model config/snowflake_config.json 1000
 ```
 This command will generate a log file (e.g., grid_log.csv).
 
@@ -66,10 +66,11 @@ This command will generate a log file (e.g., grid_log.csv).
 Open the generated CSV log with the Cell-DEVS Web Viewer to observe the evolving snowflake pattern.
 
 The visualization uses a color gradient based on the water field:
-- **Dark Blue:** Water < 0.25
-- **Blue:** 0.25 ≤ Water < 0.5
-- **Light Blue:** 0.5 ≤ Water < 0.75
-- **White:** Water ≥ 0.75 (indicating frozen cells)
+- **Dark Blue:** Water < 0.1
+- **Blue:** 0.1 ≤ Water < 0.3
+- **Deep Sky Blue:** 0.3 ≤ Water < 0.5
+- **Light Blue:** 0.5 ≤ Water < 0.8
+- **White:** Water ≥ 0.8 (indicating frozen cells)
 ---
 ## 5. Experimental Framework
 ### Model Parameters
